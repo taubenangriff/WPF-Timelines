@@ -541,19 +541,18 @@ namespace TimeLines
                     var ctrl = CreateTimeLineItemControl(itm);
                     //The index if Items.Count-1 because of zero indexing.
                     //however our children is 1 indexed because 0 is our canvas grid.
-                    Children.Insert(Items.Count, ctrl);
+                    Children.Add(ctrl);
                 }
             }
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 var removeItem = e.OldItems[0];
-                for (int i = 1; i < Children.Count; i++)
+                for (int i = 0; i < Children.Count; i++)
                 {
                     TimeLineItemControl checker = Children[i] as TimeLineItemControl;
                     if (checker != null && checker.DataContext == removeItem)
                     {
                         Children.Remove(checker);
-                        break;
                     }
                 }
             }
