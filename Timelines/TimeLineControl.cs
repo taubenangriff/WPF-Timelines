@@ -515,23 +515,29 @@ namespace TimeLines
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 var itm = e.NewItems[0] as ITimeLineData;
-                if (itm.StartTime.HasValue && itm.StartTime.Value == TimeSpan.MinValue)
+                if (itm.StartTime.HasValue)
                 {//newly created item isn't a drop in so we need to instantiate and place its control.
-                    TimeSpan duration = itm.EndTime.Value.Subtract(itm.StartTime.Value);
-                    if (Items.Count == 1)//this is the first one added
+
+                    //We need to adjust Duration normally, but if the Start and Endtime have been set, we can instantly create the control. 
+                    if (itm.StartTime.Value == TimeSpan.MinValue)
                     {
-                        itm.StartTime = StartTime;
-                        itm.EndTime = StartTime.Add(duration);
-                    }
-                    else
-                    {
-                        var last = Items.OrderBy(i => i.StartTime.Value).LastOrDefault();
-                        if (last != null)
+                        TimeSpan duration = itm.EndTime.Value.Subtract(itm.StartTime.Value);
+                        if (Items.Count == 1)//this is the first one added
                         {
-                            itm.StartTime = last.EndTime;
-                            itm.EndTime = itm.StartTime.Value.Add(duration);
+                            itm.StartTime = StartTime;
+                            itm.EndTime = StartTime.Add(duration);
+                        }
+                        else
+                        {
+                            var last = Items.OrderBy(i => i.StartTime.Value).LastOrDefault();
+                            if (last != null)
+                            {
+                                itm.StartTime = last.EndTime;
+                                itm.EndTime = itm.StartTime.Value.Add(duration);
+                            }
                         }
                     }
+                    
                     var ctrl = CreateTimeLineItemControl(itm);
                     //The index if Items.Count-1 because of zero indexing.
                     //however our children is 1 indexed because 0 is our canvas grid.
