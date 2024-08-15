@@ -132,7 +132,7 @@ namespace TimeLines
 
             Redraw();
         }
-        void CreateTimelineControls()
+        public void CreateTimelineControls()
         {
             TimelineControls.Clear();
 
